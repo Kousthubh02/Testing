@@ -2,12 +2,15 @@ const mysql = require('mysql');
 
 const connectMysql = async () => {
     try {
-        const connection = await mysql.createConnection({
+        const connection = mysql.createConnection({
             host: 'localhost',
             user: 'root',
             password: '1402',
             database: 'FTP'
         });
+
+        // Establish the connection
+        await connection.connect();
 
         // Connection successful
         console.log('Connected to MySQL database.');
