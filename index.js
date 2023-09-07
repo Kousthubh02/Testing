@@ -9,9 +9,9 @@ app.use(express.json());
 app.use(cors())
 
 app.use('/',require('./routes/formSubmit'))
-// app.use('/files',require('./routes/files'))
 
 
 app.listen(port,()=>{
     console.log(`Listening to port ${port}`);
 })
+

@@ -5,18 +5,19 @@ const { check, validationResult } = require('express-validator');
 const connection = require('../db'); 
 
 
+
+// endpoint to upload personal details
 router.get('/details', (req, res, next) => {
   res.send('details form active');
 });
 
-
-// endpoint to upload personal details
 router.post('/details', [
   check('name').notEmpty().withMessage('Name is required'),
   check('designation').notEmpty().withMessage('Designation is required'),
   check('qualification').notEmpty().withMessage('Qualification is required'),
   check('date_of_joining').notEmpty().withMessage('Date of joining is required'),
 ], (req, res, next) => {
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -41,16 +42,15 @@ router.post('/details', [
 
 
 
+  // endpoint for profile image
   router.get('/profile',(req,res)=>{
     res.json({message:'profile form active'})
   })
 
+// body : form-data
 
-  // endpoint for profile image
   router.post('/profile',(req,res)=>{
-
    const profileImg = req.files.profileImg;
-
 
     if (!req.files || !req.files.profileImg) {
       return res.status(400).json({ error: 'No file uploaded' });
@@ -74,10 +74,11 @@ router.get('/cv',(req,res)=>{
   res.json({message:'cv form active'})
 })
 
+// body : form-data
+
   router.post('/cv',(req,res)=>{
 
    const cv = req.files.cv;
-
 
     if (!req.files || !req.files.cv) {
       return res.status(400).json({ error: 'No file uploaded' });
@@ -88,9 +89,49 @@ router.get('/cv',(req,res)=>{
         console.error('Database error:', dbErr);
         return res.status(500).json({ error: 'Database error', message: dbErr });
       }
-
       res.json({ message: 'File uploaded and database updated' });
     });
   })
+
+
+
+
+
+// endpoint to submit area of specialization
+  router.get('/areaSpl', (req, res, next) => {
+    res.send('Form is active');
+  });
+
+
+// body :
+//   { "data" : [
+//     { "area": "AI","id":1 },
+//     { "area": "CYBER SECURITY","id":1  },
+//     { "area": "DATA SCIENCE" ,"id":1 },
+//     { "area": "BLOCKCHAIN" ,"id":1 }
+//  ]
+//   }
+
+
+  router.post('/areaSpl', (req, res, next) => {
+    const data = req.body.data;
+  
+    if (!Array.isArray(data) || data.length === 0) {
+      return res.status(400).json({ error: 'Invalid or empty data provided' });
+    }
+  
+    const values = data.map((record) => [record.area,record.id]);
+  
+    const query = 'INSERT INTO spl (area,teacher_id) VALUES ?';
+  
+    connection.query(query, [values], (dbErr) => {
+      if (dbErr) {
+        console.error('Database error:', dbErr);
+        return res.status(500).json({ error: 'Database error', message: dbErr });
+      }
+  
+      res.json({ message: 'Records inserted successfully' });
+    });
+  });
 
 module.exports = router;
