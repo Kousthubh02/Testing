@@ -134,4 +134,41 @@ router.get('/cv',(req,res)=>{
     });
   });
 
+
+  // endpoint for subjects taught
+
+  router.get('/subjects', (req, res, next) => {
+    res.send('Form is active');
+  });
+  
+  // Body:
+//   { "data" : [
+//     { "subject": "AI","semester":6,"id":1 },
+//     { "subject": "CYBER SECURITY","semester":5,"id":1  },
+//     { "subject": "DATA SCIENCE" ,"semester":8,"id":1 },
+//     { "subject": "BLOCKCHAIN" ,"semester":5,"id":1 }
+//  ]
+//   }
+
+  router.post('/subjects', (req, res, next) => {
+    const data = req.body.data;
+  
+    if (!Array.isArray(data) || data.length === 0) {
+      return res.status(400).json({ error: 'Invalid or empty data provided' });
+    }
+  
+    const values = data.map((record) => [record.subject,record.semster,record.id]);
+  
+    const query = 'INSERT INTO subject (subject,semester,teacher_id) VALUES ?';
+  
+    connection.query(query, [values], (dbErr) => {
+      if (dbErr) {
+        console.error('Database error:', dbErr);
+        return res.status(500).json({ error: 'Database error', message: dbErr });
+      }
+  
+      res.json({ message: 'Records inserted successfully' });
+    });
+  });
+
 module.exports = router;
