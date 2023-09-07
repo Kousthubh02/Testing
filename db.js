@@ -1,25 +1,14 @@
-const mysql = require('mysql');
+let mysql=require('mysql')
+let connection=mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: '1402',
+        database: 'FTP'
+    });
 
-const connectMysql = async () => {
-    try {
-        const connection = mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: '1402',
-            database: 'FTP'
-        });
+    connection.connect(function(err){
+        if(err) throw err
+        console.log('Connected to Mysql')
+    })
 
-        // Establish the connection
-        await connection.connect();
-
-        // Connection successful
-        console.log('Connected to MySQL database.');
-
-        return connection;
-    } catch (error) {
-        console.error('Error connecting to DB', error);
-        throw error; // Rethrow the error to be handled by the caller
-    }
-};
-
-module.exports = connectMysql;
+module.exports=connection;
