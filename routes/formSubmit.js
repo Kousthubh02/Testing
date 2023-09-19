@@ -6,7 +6,23 @@ const connection = require('../db');
 
 
 
+
+
+
+
+
+// Body:
+// {
+//   "name":"Kousthubh",
+//   "designation":"HOD",
+//   "qualification":"Ph.D",
+//   "date_of_joining":"2022-02-02"
+// }
+
 // endpoint to upload personal details
+
+
+
 router.get('/details', (req, res, next) => {
   res.send('details form active');
 });
@@ -98,8 +114,10 @@ router.get('/cv',(req,res)=>{
 
 
 // endpoint to submit area of specialization
+
+
   router.get('/areaSpl', (req, res, next) => {
-    res.send('Form is active');
+    res.send('areaSpl Form is active');
   });
 
 
