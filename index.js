@@ -1,35 +1,26 @@
 const express = require('express');
 const cors = require('cors');
-const mysql = require('mysql2/promise'); 
-const fileUpload = require('express-fileupload');
+const mysql = require('mysql2');
 const app = express();
 const port = 8000;
+const fileUpload = require('express-fileupload');
+const db = require('./db'); // Adjust the path accordingly
+
 app.use(fileUpload());
 app.use(express.json());
 app.use(cors());
 
-// Replace your database connection configuration
-const pool = require('./db'); 
-
-app.get('/',async (_req,res) => {
-console.log("you are conneted to this port");
-});
-
+app.use('/', require('./routes/formSubmit'));
 
 app.get('/personal_details', async (_req, res) => {
   try {
-    const [rows, fields] = await pool.query('SELECT * FROM personal_details');
+    const [rows, fields] = await db.promise().query('SELECT * FROM personal_details');
     res.json({ data: rows });
   } catch (error) {
     console.error('Error executing query:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-
-
-app.use('/',require('./routes/formSubmit'));
-
 
 app.listen(port, () => {
   console.log(`Listening to port ${port}`);
