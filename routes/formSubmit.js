@@ -52,7 +52,7 @@ router.post('/details', [
       if (insertErr) {
         return res.status(500).json({ error: 'Database error',message:insertErr});
       }
-      return res.json({ message: 'You are successfully registered' });
+      return res.json({ message: 'Successful' });
     });
   });
 
@@ -121,15 +121,6 @@ router.get('/cv',(req,res)=>{
   });
 
 
-// body :
-//   { "data" : [
-//     { "area": "AI","id":1 },
-//     { "area": "CYBER SECURITY","id":1  },
-//     { "area": "DATA SCIENCE" ,"id":1 },
-//     { "area": "BLOCKCHAIN" ,"id":1 }
-//  ]
-//   }
-
 
   router.post('/areaSpl', (req, res, next) => {
     const data = req.body.data;
@@ -188,5 +179,32 @@ router.get('/cv',(req,res)=>{
       res.json({ message: 'Records inserted successfully' });
     });
   });
+
+  router.post('/research',  (req, res, next) => {
+  
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+  
+    const { teacher_id,name_of_project,type_of_grant,funding_organization,amount,duration} = req.body;
+  
+    const inputData = {
+      teacher_id,
+      name_of_project,
+      type_of_grant,
+      funding_organization,
+      amount,
+      duration
+    };
+      const insertQuery = 'INSERT INTO research_project SET ?';
+      connection.query(insertQuery, [inputData], (insertErr) => {
+        if (insertErr) {
+          return res.status(500).json({ error: 'Database error',message:insertErr});
+        }
+        return res.json({ message: 'Records inserted successfully' });
+      });
+    });
+
 
 module.exports = router;
