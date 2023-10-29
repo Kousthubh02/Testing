@@ -1,38 +1,38 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const express = require('express');
-const router = express.Router();
-const { check, validationResult } = require('express-validator');
-const connection = require('../db'); 
-const bcrypt = require('bcrypt');
+const db = require('../db'); // Adjust the path accordingly
 
+const authRouter = express.Router();
 
-
-router.post('/login', (req, res) => {
-    const email = req.body.email;
-    const plainPassword = req.body.password;
-
-    const sqlSearch = 'SELECT * FROM login WHERE email = ?';
-    const searchQuery = mysql.format(sqlSearch, [email]);
-
-    connection.query(searchQuery, (err, result) => {
-        if (err) {
-            res.status(500).send({ message: 'Database error' });
-        } else if (result.length === 0) {
-            res.status(404).send({ message: 'User not found' });
-        } else {
-            const storedPassword = result[0].password;
-
-            if (plainPassword === storedPassword) {
-                res.send({ message: 'Login Successful' });
-            } else {
-                res.send({ message: 'Bad Credentials' });
-            }
-        }
+// Function to authenticate user and retrieve teacher ID
+const loginUser = (email, password, callback) => {
+  // Validate user credentials
+  db.promise().query('SELECT teacher_id FROM login WHERE email = ? AND password = ?', [email, password])
+    .then(([rows, fields]) => {
+      if (rows.length > 0) {
+        const teacherId = rows[0].teacher_id;
+        callback(null, { success: true, teacherId });
+      } else {
+        callback({ error: 'Invalid credentials' });
+      }
+    })
+    .catch((error) => {
+      console.error('Error executing query:', error);
+      callback({ error: 'Internal Server Error' });
     });
+};
+
+// POST endpoint for user login
+authRouter.post('/auth', (req, res) => {
+  const { email, password } = req.body;
+
+  loginUser(email, password, (error, result) => {
+    if (error) {
+      res.status(401).json(error);
+    } else {
+      res.json(result);
+    }
+  });
 });
 
-
-
-
-
-module.exports = router;
+module.exports = { loginUser, authRouter };

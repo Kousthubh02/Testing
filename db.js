@@ -2,7 +2,7 @@ let mysql=require('mysql2')
 let connection=mysql.createConnection({
         host: 'localhost',
         user: 'root',
-        password: '1402',
+        password: '123456789', //change password
         database: 'FTP'
     });
 
