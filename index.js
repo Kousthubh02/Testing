@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2');
+const morgan=require('morgan');
+const bodyParser=require('body-parser');
 const app = express();
 const port = 8000;
 const fileUpload = require('express-fileupload');
@@ -9,6 +11,12 @@ const { loginUser, authRouter } = require('./routes/auth'); // Adjust the path a
 app.use(fileUpload());
 app.use(express.json());
 app.use(cors());
+app.use(morgan('dev'));
+// app.use(
+//   bodyParser.urlencoded({
+//     extended: true,
+//   })
+// )
 
 app.use('/', authRouter); // Use the auth router
 app.use('/', require('./routes/formSubmit'));
