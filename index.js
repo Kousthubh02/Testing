@@ -5,13 +5,16 @@ const morgan=require('morgan');
 const bodyParser=require('body-parser');
 const app = express();
 const port = 8000;
-const fileUpload = require('express-fileupload');
+// const fileUpload = require('express-fileupload');
 const db = require('./db'); // Adjust the path accordingly
 const { loginUser, authRouter } = require('./routes/auth'); // Adjust the path accordingly
-app.use(fileUpload());
+// app.use(fileUpload());
 app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
+app.set('views', './views');
+app.set('view engine', 'ejs');
+
 // app.use(
 //   bodyParser.urlencoded({
 //     extended: true,
