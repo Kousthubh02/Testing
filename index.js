@@ -23,6 +23,7 @@ app.set('view engine', 'ejs');
 
 app.use('/', authRouter); // Use the auth router
 app.use('/', require('./routes/formSubmit'));
+app.use('/', require('./routes/formEdit'));
 
 
 app.get('/personal_details', async (_req, res) => {
