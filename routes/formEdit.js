@@ -3,7 +3,7 @@ const router = express.Router();
 const connection = require('../db'); // Assuming db.js is in the same directory
 
 router.put('/updateDetails/:id', async (req, res) => {
-    const { name, designation, qualification, date_of_joining } = req.body;
+    const { name, designation, qualification, date_of_joining, } = req.body;
 
     try {
         const newProfile = {};
@@ -31,7 +31,9 @@ router.put('/updateDetails/:id', async (req, res) => {
         connection.query(updateQuery, [newProfile, userId], (error, results) => {
             if (error) {
                 console.error('Error updating profile:', error.message);
+                console.log(userId)
                 return res.status(500).send('Internal Server Error');
+
             }
 
             // Check if any rows were affected by the update
